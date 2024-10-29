@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Paste</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;     
+            height: 100vh;         
+            margin: 0;       
+            font-family: Arial, sans-serif; 
+            background-color: #f0f0f0; 
+        }
+        div {
+            text-align: center; 
+            padding: 20px; 
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+        h1 {
+            margin: 0;         
+            font-family: 'Arial', serif; 
+            color: #333;        
+        }
+        textarea {
+            display: block;  
+            margin: 10px auto;  
+        }
+        button {
+            margin-top: 0;   
+            padding: 2px 16px;  
+            font-size: 16px;    
+            cursor: pointer;    
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Create your Paste</h1>
+        <form action="/create" method="POST">
+            <textarea name="content" rows="10" cols="48" placeholder="Enter your text..."></textarea>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>
