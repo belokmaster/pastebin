@@ -1,6 +1,7 @@
 package main
 
 import (
+	"sync"
 	"time"
 )
 
@@ -10,3 +11,9 @@ type Paste struct {
 	Content   string    `json:"content"`
 	CreatedAt time.Time `json:"created_at"`
 }
+
+// In-memory storage for pastes
+var (
+	pasteStore = make(map[string]Paste)
+	mu         sync.Mutex
+)
