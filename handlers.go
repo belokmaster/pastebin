@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"html/template"
 	"log"
@@ -42,9 +43,11 @@ func createPasteHandler(w http.ResponseWriter, r *http.Request) {
 		CreatedAt: time.Now(),
 	}
 
-	mu.Lock()
-	pasteStore[p.ID] = p
-	mu.Unlock()
+	if err := savePaste(db, p); err != nil {
+		log.Printf("Error saving paste: %v", err)
+		http.Error(w, "Could not save paste. Please try again later.", http.StatusInternalServerError)
+		return
+	}
 
 	host := r.Host
 	if host == "" {
@@ -79,12 +82,13 @@ func getPasteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	mu.Lock()
-	paste, exists := pasteStore[id]
-	mu.Unlock()
-
-	if !exists {
+	paste, err := getPasteByID(db, id)
+	if err == sql.ErrNoRows {
 		http.Error(w, "Paste not found", http.StatusNotFound)
+		return
+	} else if err != nil {
+		log.Printf("Error retrieving paste: %v", err)
+		http.Error(w, "Could not retrieve paste. Please try again later.", http.StatusInternalServerError)
 		return
 	}
 
