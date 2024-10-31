@@ -45,11 +45,13 @@ func createPasteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	expirationAt := time.Now().Add(time.Duration(expiration) * time.Minute)
+
 	p := Paste{
 		ID:           generateID(),
 		Content:      content,
 		CreatedAt:    time.Now(),
-		ExpirationAt: time.Duration(expiration) * time.Minute,
+		ExpirationAt: expirationAt,
 	}
 
 	if err := savePaste(db, p); err != nil {

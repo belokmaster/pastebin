@@ -29,6 +29,9 @@ func main() {
 		log.Fatalf("Failed to initialize database: %v", err)
 	}
 
+	// Start the expiration cleaner goroutine
+	go startExpirationCleaner(db)
+
 	http.HandleFunc("/", showFormHandler)          // Shows the form for creating a paste
 	http.HandleFunc("/create", createPasteHandler) // Creates a paste
 	http.HandleFunc("/get", getPasteHandler)       // Gets a paste by ID
@@ -42,7 +45,8 @@ func initializeDatabase(db *sql.DB) error {
 	CREATE TABLE IF NOT EXISTS pastes (
 		id TEXT PRIMARY KEY,
 		content TEXT,
-		created_at TIMESTAMP
+		created_at TIMESTAMP,
+		expiration_at TIMESTAMP
 	);`
 	_, err := db.Exec(query)
 	return err
