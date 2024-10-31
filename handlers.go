@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -37,10 +38,18 @@ func createPasteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	expirationStr := r.FormValue("expiration")
+	expiration, err := strconv.Atoi(expirationStr)
+	if err != nil {
+		http.Error(w, "Invalid expiration value", http.StatusBadRequest)
+		return
+	}
+
 	p := Paste{
-		ID:        generateID(),
-		Content:   content,
-		CreatedAt: time.Now(),
+		ID:           generateID(),
+		Content:      content,
+		CreatedAt:    time.Now(),
+		ExpirationAt: time.Duration(expiration) * time.Minute,
 	}
 
 	if err := savePaste(db, p); err != nil {
